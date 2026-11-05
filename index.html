@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Options Bid-Ask Spread — Desk Reality</title>
+  <style>
+    :root {
+      --bg: #0f1419;
+      --card: #1a2332;
+      --text: #e6edf3;
+      --muted: #8b9bb4;
+      --accent: #58a6ff;
+      --accent2: #3fb950;
+      --border: #30363d;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    header {
+      padding: 3rem 1.5rem 2rem;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(180deg, #161b22 0%, var(--bg) 100%);
+    }
+    header h1 {
+      font-size: 2.4rem;
+      margin: 0 0 0.5rem;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    header p { color: var(--muted); font-size: 1.15rem; max-width: 720px; margin: 0 auto; }
+    nav {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      padding: 1rem;
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+    nav a { color: var(--accent); text-decoration: none; font-weight: 500; }
+    nav a:hover { text-decoration: underline; }
+    main { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+    section { margin-bottom: 3rem; }
+    h2 {
+      font-size: 1.75rem;
+      border-bottom: 2px solid var(--accent);
+      padding-bottom: 0.4rem;
+      margin-bottom: 1.25rem;
+    }
+    h3 { color: var(--accent2); margin-top: 1.75rem; }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem 1.5rem;
+      margin: 1rem 0;
+    }
+    ul { padding-left: 1.25rem; }
+    li { margin-bottom: 0.4rem; }
+    .formula {
+      background: #0d1117;
+      border-left: 4px solid var(--accent);
+      padding: 1rem 1.25rem;
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+      font-size: 0.95rem;
+      border-radius: 0 8px 8px 0;
+      overflow-x: auto;
+    }
+    footer {
+      text-align: center;
+      padding: 2rem;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+      font-size: 0.9rem;
+    }
+    .tag {
+      display: inline-block;
+      background: #21262d;
+      color: var(--muted);
+      padding: 0.15rem 0.5rem;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      margin-right: 0.35rem;
+    }
+    a { color: var(--accent); }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Options Bid-Ask Spread</h1>
+    <p>Desk reality vs. textbook theory — what actually determines the spread for market makers and informed traders.</p>
+  </header>
+
+  <nav>
+    <a href="#why">Why It Matters</a>
+    <a href="#mm">Market Maker View</a>
+    <a href="#investor">Investor View</a>
+    <a href="#model">Mental Model</a>
+    <a href="https://github.com/PrakharQuant/options-bid-ask-spread" target="_blank">GitHub Repo</a>
+  </nav>
+
+  <main>
+    <section id="why">
+      <h2>Why This Matters</h2>
+      <div class="card">
+        <p>Textbooks treat the mid-price as “the” price and spend most of their time on Black-Scholes and the Greeks. On a real trading desk the <strong>bid-ask spread</strong> — and the continuous shading of quotes around inventory — is one of the most important daily decisions.</p>
+        <p>The spread is the primary compensation for providing liquidity and taking risk. It is also one of the largest explicit transaction costs traders face. Understanding its drivers improves execution quality and helps interpret microstructure signals.</p>
+      </div>
+    </section>
+
+    <section id="mm">
+      <h2>Market Maker Perspective</h2>
+      <p>Market makers quote around a theoretical value derived from a volatility surface. The width and asymmetry of that quote compensate for three core risks:</p>
+
+      <h3>1. Inventory / Holding Risk</h3>
+      <div class="card">
+        <ul>
+          <li><strong>Gamma risk</strong> — especially high in near-term at-the-money options</li>
+          <li><strong>Vega risk</strong> — longer-dated or high-volatility options</li>
+          <li>Residual delta, pin risk, and cross-book exposures</li>
+          <li>Desks continuously shade quotes based on current inventory: long → lower the ask to sell; short → raise the bid to buy</li>
+        </ul>
+      </div>
+
+      <h3>2. Adverse Selection / Informed Flow Risk</h3>
+      <div class="card">
+        <ul>
+          <li>Risk of trading against better-informed counterparties (news, earnings, superior volatility view, large directional flow)</li>
+          <li>Spreads widen when order flow looks one-sided or “toxic”, around events, or after non-trading periods</li>
+          <li>Classic microstructure component (Glosten-Milgrom style)</li>
+        </ul>
+      </div>
+
+      <h3>3. Hedging & Liquidity Costs</h3>
+      <div class="card">
+        <ul>
+          <li>Cost and expected slippage of delta-hedging in the underlying or futures</li>
+          <li>Wider underlying spreads or lower underlying liquidity → wider option spreads</li>
+          <li>Illiquid single-stock options trade wider than SPX/SPY or large-cap options at similar volatility</li>
+        </ul>
+      </div>
+
+      <h3>Other Practical Factors</h3>
+      <ul>
+        <li><span class="tag">Liquidity</span> Volume, open interest, quoted size, balance of flow</li>
+        <li><span class="tag">Contract</span> Moneyness & maturity (ATM usually tightest in dollar terms; proportional spreads often widen OTM)</li>
+        <li><span class="tag">Vol regime</span> Higher realized or implied volatility → wider spreads</li>
+        <li><span class="tag">Competition</span> More market makers → tighter quotes</li>
+        <li><span class="tag">Constraints</span> Capital, position limits, and exchange rules</li>
+        <li>Many desks manage spreads in <strong>volatility space</strong> first, then convert to price</li>
+      </ul>
+    </section>
+
+    <section id="investor">
+      <h2>Informed Investor Perspective</h2>
+      <div class="card">
+        <p>The informed trader does not set the spread but faces it as a major cost and influences it through their activity.</p>
+        <ul>
+          <li>Round-trip cost = full spread × 100 × contracts</li>
+          <li>Informed flow itself increases the adverse-selection component (spreads are wider <em>because</em> of informed traders)</li>
+          <li>Prefer liquid underlyings and contracts (high volume + open interest, especially ATM or near-ATM)</li>
+          <li>Use limit orders inside the spread rather than always lifting the offer or hitting the bid</li>
+          <li>Size carefully to limit market impact and inventory shading</li>
+          <li>Be aware of time-of-day and event effects (wider at open/close and around catalysts)</li>
+          <li>For multi-leg strategies, the <em>net</em> spread across all legs matters</li>
+          <li>Wide spreads make the mid a noisier estimate of fair value (IV, expected move, skew readings become less reliable)</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="model">
+      <h2>Simplified Mental Model</h2>
+      <div class="formula">
+Spread ≈ Inventory risk cost<br>
+&nbsp;&nbsp;&nbsp;&nbsp;+ Adverse selection cost<br>
+&nbsp;&nbsp;&nbsp;&nbsp;+ Hedging / transaction costs<br><br>
+(adjusted in real time for current inventory,<br>
+&nbsp;expected flow toxicity, and competition)
+      </div>
+      <p style="margin-top:1.5rem;color:var(--muted);">Related concepts: inventory models (Amihud-Mendelson, Ho-Stoll, Avellaneda-Stoikov), adverse selection models (Glosten-Milgrom), and option-specific hedging-cost theory. Empirical work often finds option-return volatility (elasticity × underlying volatility) to be a strong determinant of spreads.</p>
+    </section>
+  </main>
+
+  <footer>
+    Educational resource · Not investment advice · <a href="https://github.com/PrakharQuant/options-bid-ask-spread">View source on GitHub</a>
+  </footer>
+</body>
+</html>
