@@ -3,193 +3,330 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Options Bid-Ask Spread — Desk Reality</title>
+  <title>Options Bid-Ask Spread | Desk Reality</title>
   <style>
     :root {
-      --bg: #0f1419;
-      --card: #1a2332;
-      --text: #e6edf3;
-      --muted: #8b9bb4;
-      --accent: #58a6ff;
-      --accent2: #3fb950;
-      --border: #30363d;
+      --bg: #0b0f14;
+      --card: #151c27;
+      --card-hover: #1c2635;
+      --text: #e8eef6;
+      --muted: #8fa3bf;
+      --accent: #5b9cff;
+      --accent2: #3ee0a0;
+      --accent3: #ffb86b;
+      --border: #2a3544;
+      --danger: #ff6b6b;
+      --success: #3ee0a0;
     }
     * { box-sizing: border-box; }
     body {
       margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       background: var(--bg);
       color: var(--text);
-      line-height: 1.6;
+      line-height: 1.55;
     }
     header {
-      padding: 3rem 1.5rem 2rem;
+      padding: 2.5rem 1.25rem 1.75rem;
       text-align: center;
+      background: radial-gradient(ellipse at top, #1a2740 0%, var(--bg) 70%);
       border-bottom: 1px solid var(--border);
-      background: linear-gradient(180deg, #161b22 0%, var(--bg) 100%);
     }
     header h1 {
-      font-size: 2.4rem;
-      margin: 0 0 0.5rem;
-      background: linear-gradient(90deg, var(--accent), var(--accent2));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      font-size: clamp(1.9rem, 5vw, 2.6rem);
+      margin: 0 0 0.4rem;
+      letter-spacing: -0.5px;
     }
-    header p { color: var(--muted); font-size: 1.15rem; max-width: 720px; margin: 0 auto; }
+    header p {
+      color: var(--muted);
+      font-size: 1.05rem;
+      max-width: 640px;
+      margin: 0 auto;
+    }
     nav {
       display: flex;
       justify-content: center;
-      gap: 1.5rem;
-      padding: 1rem;
+      gap: 1.1rem;
+      padding: 0.85rem 1rem;
       border-bottom: 1px solid var(--border);
       flex-wrap: wrap;
+      background: #10161f;
+      position: sticky;
+      top: 0;
+      z-index: 10;
     }
-    nav a { color: var(--accent); text-decoration: none; font-weight: 500; }
+    nav a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.92rem;
+    }
     nav a:hover { text-decoration: underline; }
-    main { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
-    section { margin-bottom: 3rem; }
+    main { max-width: 980px; margin: 0 auto; padding: 1.75rem 1.1rem 3.5rem; }
+    section { margin-bottom: 2.75rem; }
     h2 {
-      font-size: 1.75rem;
-      border-bottom: 2px solid var(--accent);
-      padding-bottom: 0.4rem;
-      margin-bottom: 1.25rem;
+      font-size: 1.55rem;
+      margin: 0 0 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
     }
-    h3 { color: var(--accent2); margin-top: 1.75rem; }
+    h2::before {
+      content: "";
+      width: 4px;
+      height: 1.3em;
+      background: linear-gradient(var(--accent), var(--accent2));
+      border-radius: 2px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1rem;
+      margin: 1rem 0;
+    }
     .card {
       background: var(--card);
       border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 1.25rem 1.5rem;
+      border-radius: 12px;
+      padding: 1.15rem 1.2rem;
+      transition: border-color 0.15s, transform 0.15s;
+    }
+    .card:hover {
+      border-color: #3d4f6a;
+      transform: translateY(-2px);
+    }
+    .card h3 {
+      margin: 0 0 0.5rem;
+      font-size: 1.05rem;
+      color: var(--accent2);
+    }
+    .card ul { margin: 0.4rem 0 0; padding-left: 1.1rem; }
+    .card li { margin-bottom: 0.3rem; font-size: 0.95rem; }
+    .highlight {
+      background: linear-gradient(135deg, #1a2740, #152033);
+      border-left: 4px solid var(--accent);
+      padding: 1rem 1.2rem;
+      border-radius: 0 10px 10px 0;
       margin: 1rem 0;
     }
-    ul { padding-left: 1.25rem; }
-    li { margin-bottom: 0.4rem; }
     .formula {
       background: #0d1117;
-      border-left: 4px solid var(--accent);
-      padding: 1rem 1.25rem;
+      border: 1px solid var(--border);
+      padding: 1rem 1.2rem;
       font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
-      font-size: 0.95rem;
-      border-radius: 0 8px 8px 0;
-      overflow-x: auto;
+      font-size: 0.92rem;
+      border-radius: 10px;
+      line-height: 1.65;
+    }
+    .fact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    @media (max-width: 640px) {
+      .fact-grid { grid-template-columns: 1fr; }
+    }
+    .fact {
+      padding: 1rem;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+    .fact.low {
+      background: rgba(62, 224, 160, 0.08);
+      border-color: rgba(62, 224, 160, 0.35);
+    }
+    .fact.high {
+      background: rgba(255, 107, 107, 0.08);
+      border-color: rgba(255, 107, 107, 0.35);
+    }
+    .fact h3 { margin-top: 0; }
+    .tag {
+      display: inline-block;
+      background: #1e2a3a;
+      color: var(--muted);
+      padding: 0.12rem 0.5rem;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      margin-right: 0.3rem;
     }
     footer {
       text-align: center;
-      padding: 2rem;
+      padding: 1.75rem 1rem;
       color: var(--muted);
       border-top: 1px solid var(--border);
-      font-size: 0.9rem;
+      font-size: 0.88rem;
+      background: #0e141c;
     }
-    .tag {
-      display: inline-block;
-      background: #21262d;
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+    .social {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin: 0.6rem 0;
+    }
+    .social a {
       color: var(--muted);
-      padding: 0.15rem 0.5rem;
-      border-radius: 999px;
-      font-size: 0.8rem;
-      margin-right: 0.35rem;
+      font-size: 1.1rem;
     }
-    a { color: var(--accent); }
+    .social a:hover { color: var(--accent); }
   </style>
 </head>
 <body>
   <header>
     <h1>Options Bid-Ask Spread</h1>
-    <p>Desk reality vs. textbook theory — what actually determines the spread for market makers and informed traders.</p>
+    <p>Desk reality vs textbook theory. What actually sets the spread for market makers and informed traders.</p>
   </header>
 
   <nav>
-    <a href="#why">Why It Matters</a>
-    <a href="#mm">Market Maker View</a>
-    <a href="#investor">Investor View</a>
-    <a href="#model">Mental Model</a>
-    <a href="https://github.com/PrakharQuant/options-bid-ask-spread" target="_blank">GitHub Repo</a>
+    <a href="#why">Why it matters</a>
+    <a href="#mm">Market maker</a>
+    <a href="#industry">How it is set</a>
+    <a href="#facts">Fun facts</a>
+    <a href="#investor">Investor view</a>
+    <a href="#model">Mental model</a>
+    <a href="https://github.com/PrakharQuant/options-bid-ask-spread" target="_blank">Repo</a>
   </nav>
 
   <main>
     <section id="why">
-      <h2>Why This Matters</h2>
-      <div class="card">
-        <p>Textbooks treat the mid-price as “the” price and spend most of their time on Black-Scholes and the Greeks. On a real trading desk the <strong>bid-ask spread</strong> — and the continuous shading of quotes around inventory — is one of the most important daily decisions.</p>
-        <p>The spread is the primary compensation for providing liquidity and taking risk. It is also one of the largest explicit transaction costs traders face. Understanding its drivers improves execution quality and helps interpret microstructure signals.</p>
+      <h2>Why this matters</h2>
+      <div class="highlight">
+        Textbooks treat the mid as "the" price and focus on Black-Scholes and the Greeks. On a real desk the <strong>bid-ask spread</strong> and the continuous shading of quotes around inventory is one of the most important decisions of the day. It is both the market maker's primary compensation and one of the largest explicit costs for traders.
       </div>
     </section>
 
     <section id="mm">
-      <h2>Market Maker Perspective</h2>
-      <p>Market makers quote around a theoretical value derived from a volatility surface. The width and asymmetry of that quote compensate for three core risks:</p>
+      <h2>Market maker perspective</h2>
+      <p>Market makers quote around a theoretical value from a volatility surface. Width and asymmetry compensate for three core risks:</p>
 
-      <h3>1. Inventory / Holding Risk</h3>
-      <div class="card">
-        <ul>
-          <li><strong>Gamma risk</strong> — especially high in near-term at-the-money options</li>
-          <li><strong>Vega risk</strong> — longer-dated or high-volatility options</li>
-          <li>Residual delta, pin risk, and cross-book exposures</li>
-          <li>Desks continuously shade quotes based on current inventory: long → lower the ask to sell; short → raise the bid to buy</li>
-        </ul>
+      <div class="grid">
+        <div class="card">
+          <h3>1. Inventory risk</h3>
+          <ul>
+            <li>Gamma risk (highest in near-term ATM)</li>
+            <li>Vega risk (longer-dated or high-vol options)</li>
+            <li>Residual delta, pin risk, book exposures</li>
+            <li>Shade quotes: long lowers the ask; short raises the bid</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>2. Adverse selection</h3>
+          <ul>
+            <li>Trading against better-informed flow (news, earnings, superior vol view)</li>
+            <li>Widens when flow looks one-sided or toxic</li>
+            <li>Classic Glosten-Milgrom component</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>3. Hedging costs</h3>
+          <ul>
+            <li>Slippage and cost of delta-hedging the underlying</li>
+            <li>Illiquid underlyings produce wider option spreads</li>
+            <li>SPX/SPY/large-cap tighter than single-stock names</li>
+          </ul>
+        </div>
       </div>
 
-      <h3>2. Adverse Selection / Informed Flow Risk</h3>
       <div class="card">
-        <ul>
-          <li>Risk of trading against better-informed counterparties (news, earnings, superior volatility view, large directional flow)</li>
-          <li>Spreads widen when order flow looks one-sided or “toxic”, around events, or after non-trading periods</li>
-          <li>Classic microstructure component (Glosten-Milgrom style)</li>
-        </ul>
+        <h3>Other practical factors</h3>
+        <p>
+          <span class="tag">Liquidity</span> volume, open interest, quoted size, balance of flow<br>
+          <span class="tag">Contract</span> moneyness and maturity (ATM usually tightest in dollars)<br>
+          <span class="tag">Vol regime</span> higher realized or implied vol widens spreads<br>
+          <span class="tag">Competition</span> more market makers tighten quotes<br>
+          <span class="tag">Constraints</span> capital, position limits, exchange rules
+        </p>
+        <p style="margin-bottom:0;">Many desks manage the spread in <strong>volatility space</strong> first, then convert to price.</p>
       </div>
+    </section>
 
-      <h3>3. Hedging & Liquidity Costs</h3>
-      <div class="card">
-        <ul>
-          <li>Cost and expected slippage of delta-hedging in the underlying or futures</li>
-          <li>Wider underlying spreads or lower underlying liquidity → wider option spreads</li>
-          <li>Illiquid single-stock options trade wider than SPX/SPY or large-cap options at similar volatility</li>
-        </ul>
+    <section id="industry">
+      <h2>How the industry actually sets it</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>Real-time, not daily</h3>
+          <p>Modern options market making is electronic. Auto-quoters update thousands of series multiple times per second (often dozens to hundreds of times). Humans set the vol surface, risk limits, and inventory targets; machines do the continuous quoting.</p>
+        </div>
+        <div class="card">
+          <h3>Who decides</h3>
+          <p>Quantitative traders / options market makers oversee the systems. Risk managers set limits. There is no single person "authorizing" each quote. The auto-quoter and risk engine are the operational decision makers, calibrated by the desk.</p>
+        </div>
+        <div class="card">
+          <h3>Proprietary tech</h3>
+          <p>Firms such as Citadel Securities, Optiver, IMC, and Jane Street run custom auto-quoters, real-time risk engines, and co-located low-latency infrastructure. These systems apply inventory skew, toxicity filters, and hedging cost adjustments automatically.</p>
+        </div>
+        <div class="card">
+          <h3>Exchange rules</h3>
+          <p>Exchanges impose quoting obligations (typically 60-90% of time in assigned series with two-sided quotes), maximum quote widths (often $5 in many cases), and minimum size. These are floors and ceilings; competitive pressure usually makes spreads much tighter on liquid names.</p>
+        </div>
       </div>
+    </section>
 
-      <h3>Other Practical Factors</h3>
-      <ul>
-        <li><span class="tag">Liquidity</span> Volume, open interest, quoted size, balance of flow</li>
-        <li><span class="tag">Contract</span> Moneyness & maturity (ATM usually tightest in dollar terms; proportional spreads often widen OTM)</li>
-        <li><span class="tag">Vol regime</span> Higher realized or implied volatility → wider spreads</li>
-        <li><span class="tag">Competition</span> More market makers → tighter quotes</li>
-        <li><span class="tag">Constraints</span> Capital, position limits, and exchange rules</li>
-        <li>Many desks manage spreads in <strong>volatility space</strong> first, then convert to price</li>
-      </ul>
+    <section id="facts">
+      <h2>When is the spread lowest vs highest?</h2>
+      <div class="fact-grid">
+        <div class="fact low">
+          <h3 style="color: var(--success);">Tightest (lowest cost)</h3>
+          <ul>
+            <li>Peak volume windows: roughly 9:30-10:30 ET and late afternoon</li>
+            <li>ATM or near-ATM strikes on liquid underlyings (SPY, QQQ, large-cap)</li>
+            <li>High open interest and balanced two-sided flow</li>
+            <li>Calm volatility regimes with many competing market makers</li>
+            <li>Short-to-medium term expiries that attract active trading</li>
+          </ul>
+        </div>
+        <div class="fact high">
+          <h3 style="color: var(--danger);">Widest (highest cost)</h3>
+          <ul>
+            <li>Around events: earnings, FOMC, major news, first minutes after the open</li>
+            <li>Midday lull when volume drops and flow becomes thinner</li>
+            <li>Deep OTM or deep ITM strikes, long-dated LEAPS, illiquid single stocks</li>
+            <li>High-gamma expiration-day near-the-money options</li>
+            <li>Extended or overnight sessions with thinner participation</li>
+          </ul>
+        </div>
+      </div>
+      <p style="color: var(--muted); margin-top: 0.8rem; font-size: 0.92rem;">Rule of thumb: if the proportional spread (ask-bid)/mid is under ~2-3% on a liquid ATM option, conditions are generally favorable. Above 10% the cost often eats edge.</p>
     </section>
 
     <section id="investor">
-      <h2>Informed Investor Perspective</h2>
+      <h2>Informed investor perspective</h2>
       <div class="card">
-        <p>The informed trader does not set the spread but faces it as a major cost and influences it through their activity.</p>
         <ul>
-          <li>Round-trip cost = full spread × 100 × contracts</li>
-          <li>Informed flow itself increases the adverse-selection component (spreads are wider <em>because</em> of informed traders)</li>
-          <li>Prefer liquid underlyings and contracts (high volume + open interest, especially ATM or near-ATM)</li>
-          <li>Use limit orders inside the spread rather than always lifting the offer or hitting the bid</li>
-          <li>Size carefully to limit market impact and inventory shading</li>
-          <li>Be aware of time-of-day and event effects (wider at open/close and around catalysts)</li>
-          <li>For multi-leg strategies, the <em>net</em> spread across all legs matters</li>
-          <li>Wide spreads make the mid a noisier estimate of fair value (IV, expected move, skew readings become less reliable)</li>
+          <li>Round-trip cost equals the full spread times 100 times contracts.</li>
+          <li>Informed flow itself increases the adverse-selection component, so spreads are wider partly because of informed traders.</li>
+          <li>Prefer liquid underlyings and contracts (high volume + open interest, especially ATM).</li>
+          <li>Use limit orders inside the spread rather than always lifting the offer or hitting the bid.</li>
+          <li>Size carefully to limit market impact and inventory shading.</li>
+          <li>Watch time-of-day and event effects.</li>
+          <li>For multi-leg strategies the net spread across all legs matters more than any single leg.</li>
+          <li>Wide spreads make the mid a noisier estimate of fair value (IV, expected move, skew readings become less reliable).</li>
         </ul>
       </div>
     </section>
 
     <section id="model">
-      <h2>Simplified Mental Model</h2>
+      <h2>Simplified mental model</h2>
       <div class="formula">
 Spread ≈ Inventory risk cost<br>
-&nbsp;&nbsp;&nbsp;&nbsp;+ Adverse selection cost<br>
-&nbsp;&nbsp;&nbsp;&nbsp;+ Hedging / transaction costs<br><br>
-(adjusted in real time for current inventory,<br>
-&nbsp;expected flow toxicity, and competition)
+&nbsp;&nbsp;+ Adverse selection cost<br>
+&nbsp;&nbsp;+ Hedging / transaction costs<br><br>
+adjusted continuously for current inventory,<br>
+expected flow toxicity, and competition.
       </div>
-      <p style="margin-top:1.5rem;color:var(--muted);">Related concepts: inventory models (Amihud-Mendelson, Ho-Stoll, Avellaneda-Stoikov), adverse selection models (Glosten-Milgrom), and option-specific hedging-cost theory. Empirical work often finds option-return volatility (elasticity × underlying volatility) to be a strong determinant of spreads.</p>
+      <p style="color: var(--muted); margin-top: 1rem;">Related ideas: inventory models (Amihud-Mendelson, Ho-Stoll, Avellaneda-Stoikov), adverse-selection models (Glosten-Milgrom), and option-specific hedging-cost theory. Empirical work often finds option-return volatility (elasticity times underlying volatility) to be a strong determinant of spreads.</p>
     </section>
   </main>
 
   <footer>
-    Educational resource · Not investment advice · <a href="https://github.com/PrakharQuant/options-bid-ask-spread">View source on GitHub</a>
+    <div>Educational resource. Not investment advice.</div>
+    <div class="social">
+      <a href="https://github.com/PrakharQuant/options-bid-ask-spread" target="_blank" title="GitHub">GitHub</a>
+      <a href="https://www.linkedin.com/in/prakhar-gupta" target="_blank" title="LinkedIn">LinkedIn</a>
+      <a href="https://x.com/PrakharQuant" target="_blank" title="X">X</a>
+    </div>
+    <div>Prakhar Gupta &nbsp;|&nbsp; bestofprakhar@gmail.com</div>
   </footer>
 </body>
 </html>
